@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN" translate="no">
+<head>
+    <!-- 基础元数据 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="same-origin">
+    <meta name="theme-color" content="#f9f2fa">
+    <meta name="google" content="notranslate">
+    <meta name="description" content="昔涟导航 - 精选资源导航站，为您提供常用网站、学习资源、娱乐休闲等分类导航">
+    <meta name="keywords" content="昔涟导航,导航,网站导航,资源导航,常用网站,学习资源,娱乐休闲">
+
+    <link rel="icon" href="./assets/compass.svg">
+    <title>昔涟导航 · 漫游手记（公开版）</title>
+    <link rel="stylesheet" href="./assets/fa/css/all.min.css">
+
+    <!-- 样式：按依赖顺序加载，base 里是设计令牌和公共容器 -->
+    <link rel="stylesheet" href="./css/base.css">
+    <link rel="stylesheet" href="./css/layout.css">
+    <link rel="stylesheet" href="./css/cards.css">
+    <link rel="stylesheet" href="./css/modals.css">
+    <link rel="stylesheet" href="./css/animations.css">
+    <link rel="stylesheet" href="./css/feedback.css">
+    <link rel="stylesheet" href="./css/components.css">
+    <link rel="stylesheet" href="./css/responsive.css">
+
+    <link rel="stylesheet" href="./css/journal.css">
+
+    <!-- 入口脚本：必须在 http(s) 下运行，本地请用 node server.mjs -->
+    <script type="module" src="./js/main.js"></script>
+</head>
+<body class="light-mode">
+    <script>
+        // 首屏主题：必须在渲染前执行，否则深色模式用户会先看到一帧白底
+        (function () {
+            try {
+                if (window.localStorage.getItem('xilian.public.theme') === 'dark') {
+                    document.body.classList.remove('light-mode');
+                    document.body.classList.add('dark-mode');
+                }
+            } catch (error) {
+                /* 隐私模式下 localStorage 不可用，忽略 */
+            }
+        })();
+    </script>
+
+    <header class="navbar">
+        <a class="logo" href="./index.html"><img src="./assets/compass.svg" alt=""><strong>昔涟导航</strong><small>公开版</small></a>
+        <nav class="bookmarks" aria-label="页内导航">
+            <a href="#directory">站点索引</a>
+        </nav>
+        <nav class="nav-controls" aria-label="个人工具">
+            <button id="favoritesBtn" class="control-btn" title="我的收藏"><i class="far fa-bookmark"></i><span>我的收藏</span></button>
+            <button id="statsBtn" class="control-btn" title="浏览统计"><i class="fas fa-chart-simple"></i><span>浏览统计</span></button>
+            <button id="themeToggle" class="control-btn icon-only" title="切换主题" aria-label="切换主题"></button>
+            <button id="settingsBtn" class="control-btn icon-only" title="显示设置" aria-label="显示设置"><i class="fas fa-sliders"></i></button>
+        </nav>
+    </header>
+    <div class="shell">
+        <div class="cover-scroll">
+        <section class="hero">
+            <img class="hero-art" src="./assets/xilian-wallpaper.jpg" alt="粉发的昔涟闭着眼睛微笑，手轻轻搭在胸前" fetchpriority="high" width="2800" height="1968">
+            <div class="hero-copy">
+                <p class="eyebrow"><span aria-hidden="true">✧</span> Cyrene’s Journal</p>
+                <h1>漫游<span class="foil">手记</span></h1>
+                <div class="pin-dock"><nav id="pinLinks" aria-label="首页常用站点"></nav><button id="editPins" type="button" aria-haspopup="dialog">＋ 添加常用</button></div>
+
+
+            </div>
+            <a class="enter-directory" href="#directory"><i class="fas fa-chevron-down"></i> 浏览目录</a>
+            <a class="view-art" href="./assets/xilian-wallpaper.jpg" target="_blank" rel="noopener" aria-label="打开沉浸赏画视图"><i class="far fa-image"></i> 沉浸赏画</a>
+        </section>
+        </div>
+        <div class="directory" id="directory">
+            <aside class="index-panel">
+                <h2><i class="fas fa-layer-group"></i> 分类索引</h2>
+                <nav id="categoryIndex" aria-label="分类索引"></nav>
+    <aside class="bulletin" id="announcementModal" aria-labelledby="announcementTitle" hidden>
+        <strong id="announcementTitle">站内消息</strong><span id="announcementBody"></span>
+        <button id="announcementButton">知道了</button><button id="announcementClose" aria-label="关闭公告">×</button>
+    </aside>
+            </aside>
+            <div class="results">
+                <header class="directory-head"><div><span class="kicker">The Collection</span><h2 id="currentCategory">资源目录</h2></div><span id="resultCount" aria-live="polite"></span></header>
+                <div class="search-box search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="search" class="search-input" id="searchInput" placeholder="搜索站点、工具或域名" aria-label="搜索网站">
+                    <kbd>Ctrl K</kbd>
+                </div>
+            <div class="waypoint">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <a id="destination" target="_blank" rel="noopener noreferrer" aria-live="polite"></a>
+                <button id="shuffleSite" type="button" title="随机推荐另一个站点"><i class="fas fa-shuffle"></i> 换一站</button>
+            </div>
+                <p class="no-result" id="noResult" hidden>没有匹配的网站，试试其他关键词或分类。</p>
+                <main class="container" id="mainContent"><div class="loading"><div class="loading-spinner"></div></div></main>
+            </div>
+        </div>
+    </div>
+    <dialog id="pinDialog" aria-labelledby="pinTitle">
+        <header><h2 id="pinTitle">我的常用站点</h2><form method="dialog"><button class="utility">完成</button></form></header>
+        <section id="pinOrderSection"><h3>首页顺序</h3><div id="pinOrder"></div></section>
+        <label for="pinSearch">选择站点</label>
+        <input id="pinSearch" type="search" placeholder="按名称或域名查找" autocomplete="off">
+        <div id="pinOptions"></div>
+    </dialog>
+    <dialog id="artDialog" aria-label="昔涟原画">
+        <div class="lightbox-stage"><img src="./assets/xilian-wallpaper.jpg" width="2800" height="1968" alt="昔涟完整原画"></div>
+        <div class="lightbox-tools"><button type="button" id="artZoom" aria-pressed="false">放大细看</button>
+            <form method="dialog"><button aria-label="关闭赏画">返回手记</button></form></div>
+    </dialog>
+    <div class="favorites-modal" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" aria-hidden="true">
+        <div class="favorites-content"><div class="favorites-header"><h2 id="settingsTitle">显示设置</h2><button class="close-favorites" data-modal-close aria-label="关闭设置">×</button></div>
+            <label class="setting-row">紧凑卡片 <input id="compactCards" type="checkbox"></label>
+            <button class="utility" id="refreshBtn"><i class="fas fa-sync-alt"></i> 刷新页面</button>
+        </div>
+    </div>
+
+    <!-- 收藏夹弹窗 -->
+    <div class="favorites-modal" id="favoritesModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="favoritesTitle">
+        <div class="favorites-content">
+            <div class="favorites-header">
+                <h2 class="favorites-title" id="favoritesTitle"><i class="fas fa-heart"></i> 我的收藏</h2>
+                <button class="close-favorites" id="closeFavorites" data-modal-close aria-label="关闭收藏夹">&times;</button>
+            </div>
+            <div class="favorites-body" id="favoritesBody">
+                <div class="empty-favorites">
+                    <i class="fas fa-heart-broken"></i>
+                    <p>还没有收藏任何网站</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 统计弹窗 -->
+    <div class="stats-modal" id="statsModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="statsTitle">
+        <div class="stats-content">
+            <div class="stats-header">
+                <h2 class="stats-title" id="statsTitle"><i class="fas fa-chart-bar"></i> 网站统计</h2>
+                <button class="close-stats" id="closeStats" data-modal-close aria-label="关闭统计">&times;</button>
+            </div>
+            <div class="stats-body">
+                <div class="stats-section">
+                    <h3><i class="fas fa-fire"></i> 热门排行 TOP 10</h3>
+                    <div class="ranking-list" id="rankingList">
+                        <!-- 由 js/features/ranking.js 渲染 -->
+                    </div>
+                </div>
+                <div class="stats-section">
+                    <h3><i class="fas fa-search"></i> 搜索热词</h3>
+                    <div class="search-cloud" id="searchCloud">
+                        <!-- 由 js/features/ranking.js 渲染 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 二维码弹窗 -->
+    <div class="qr-modal" id="qrModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="qrTitle">
+        <div class="qr-content">
+            <div class="qr-header">
+                <h2 class="qr-title" id="qrTitle"><i class="fas fa-qrcode"></i> 扫码访问</h2>
+                <button class="close-qr" id="closeQr" data-modal-close aria-label="关闭二维码">&times;</button>
+            </div>
+            <div class="qr-body">
+                <div class="qr-info">
+                    <p id="qrSiteName">网站名称</p>
+                    <p id="qrSiteUrl">https://example.com</p>
+                </div>
+                <div class="qr-code-container">
+                    <div id="qrcode"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 公告弹窗 -->
+
+
+    <!-- 页脚 -->
+    <footer class="footer glass-container">
+        <div class="footer-content">
+            <p>© 2025 昔涟导航 | 由 <a href="https://github.com" target="_blank" rel="noopener">GitHub Pages</a> 驱动</p>
+            <p id="siteRuntime"><i class="fas fa-clock"></i> 本站已运行: 加载中...</p>
+            <p id="pageLoadTime"><i class="fas fa-stopwatch"></i> 页面加载耗时: 计算中...</p>
+            <p id="gaokaoCountdown" style="margin-top:8px;font-weight:600;color:var(--main-color);">
+                <i class="fas fa-hourglass-half"></i> 高考倒计时: 计算中...
+            </p>
+            <p><i class="fas fa-code-branch"></i> 版本: v1.0.8</p>
+        </div>
+    </footer>
+
+    <!-- 启动守卫：ES Module 加载失败时给出可读的提示，而不是永远转圈 -->
+    <script>
+        window.addEventListener('load', function () {
+            window.setTimeout(function () {
+                if (window.__XN_READY__ || window.__XN_BOOT_ERROR__) return;
+                var mount = document.getElementById('mainContent');
+                if (!mount) return;
+                mount.innerHTML =
+                    '<div class="boot-error">' +
+                    '<h3>页面脚本没有启动</h3>' +
+                    '<p>最可能的原因：直接双击打开了本地文件。浏览器的 CORS 策略会拦截 ES Module，' +
+                    '<code>js/main.js</code> 不会被加载。</p>' +
+                    '<p>请在项目根目录执行 <code>node server.mjs</code>，然后访问 ' +
+                    '<code>http://127.0.0.1:5173/public-edition/index.html</code>。</p>' +
+                    '<p>部署到 GitHub Pages 后没有这个问题。</p>' +
+                    '</div>';
+            }, 800);
+        });
+    </script>
+</body>
+</html>

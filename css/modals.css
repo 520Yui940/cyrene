@@ -1,0 +1,395 @@
+/**
+ * modals.css — 四个弹窗（公告 / 收藏 / 统计 / 二维码）
+ * 来源：legacy/index.original.html 第 464–1020 行
+ * 重构：把四份重复的「外壳 / 内容 / 头部 / 关闭按钮」合并成公共规则。
+ */
+
+/* 公告弹窗样式 */
+.announcement-modal,
+.favorites-modal,
+.stats-modal,
+.qr-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+}
+
+.announcement-modal.show,
+.favorites-modal.show,
+.stats-modal.show,
+.qr-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.announcement-content {
+    background: var(--bg-light);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 70vh;
+    overflow-y: auto;
+    transform: scale(0.9);
+    transition: var(--transition);
+}
+
+.dark-mode .announcement-content,
+.dark-mode .favorites-content,
+.dark-mode .stats-content,
+.dark-mode .qr-content {
+    background: var(--bg-dark);
+}
+
+.announcement-modal.show .announcement-content,
+.favorites-modal.show .favorites-content,
+.stats-modal.show .stats-content,
+.qr-modal.show .qr-content {
+    transform: scale(1);
+}
+
+.announcement-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--main-color);
+}
+
+.announcement-title,
+.favorites-title,
+.stats-title,
+.qr-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--main-color);
+}
+
+.announcement-close,
+.close-favorites,
+.close-stats,
+.close-qr {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: inherit;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.announcement-close:hover,
+.close-favorites:hover,
+.close-stats:hover,
+.close-qr:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(90deg);
+}
+
+.announcement-body {
+    line-height: 1.6;
+}
+
+.announcement-footer {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.announcement-button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    background: var(--main-color);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.announcement-button:hover {
+    background: var(--active-color);
+}
+
+.favorites-content {
+    background: var(--bg-light);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 70vh;
+    overflow-y: auto;
+    transform: scale(0.9);
+    transition: var(--transition);
+}
+
+.favorites-header,
+.stats-header,
+.qr-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--main-color);
+}
+
+.favorites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.favorite-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: var(--transition);
+    position: relative;
+    cursor: pointer;
+}
+
+.favorite-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.favorite-item .site-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.favorite-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.favorite-name {
+    font-weight: 600;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.favorite-url {
+    font-size: 0.8rem;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dark-mode .favorite-url,
+.dark-mode .ranking-count,
+.dark-mode .qr-site-url {
+    color: #aaa;
+}
+
+.remove-favorite {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255, 0, 0, 0.2);
+    border: none;
+    color: #ff4444;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.favorite-item:hover .remove-favorite {
+    opacity: 1;
+}
+
+.remove-favorite:hover {
+    background: rgba(255, 0, 0, 0.3);
+}
+
+.empty-favorites {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.empty-favorites i {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.stats-content {
+    background: var(--bg-light);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    max-width: 700px;
+    width: 90%;
+    max-height: 70vh;
+    overflow-y: auto;
+    transform: scale(0.9);
+    transition: var(--transition);
+}
+
+.stats-section {
+    margin-bottom: 24px;
+}
+
+.stats-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+    color: var(--main-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ranking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.ranking-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.ranking-number {
+    width: 30px;
+    height: 30px;
+    background: var(--main-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.ranking-info {
+    flex: 1;
+}
+
+.ranking-name {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.ranking-count {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.search-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 60px;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-tag {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.search-tag:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.qr-content {
+    background: var(--bg-light);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    max-width: 400px;
+    width: 90%;
+    transform: scale(0.9);
+    transition: var(--transition);
+}
+
+.qr-body {
+    text-align: center;
+}
+
+.qr-info {
+    margin-bottom: 20px;
+}
+
+.qr-info p {
+    margin-bottom: 8px;
+}
+
+.qr-site-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--main-color);
+}
+
+.qr-site-url {
+    font-size: 0.9rem;
+    color: #666;
+    word-break: break-all;
+}
+
+.qr-code-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+}
+
+#qrcode {
+    width: 200px !important;
+    height: 200px !important;
+}
+

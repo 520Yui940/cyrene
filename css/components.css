@@ -1,0 +1,31 @@
+/**
+ * components.css — 重构新增的小组件样式
+ * 这里只放原站没有、但新结构需要的东西；原有视觉全部在其它 css 里。
+ */
+
+/* 搜索无结果提示（原站是全隐藏，没有任何反馈） */
+.no-result {
+    max-width: 420px;
+    margin: 32px auto 0;
+    padding: 18px 20px;
+    border-radius: 12px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.2);
+    color: inherit;
+    font-size: 0.95rem;
+    animation: fadeInUp 0.3s ease-out;
+}
+
+.dark-mode .no-result {
+    background: rgba(0, 0, 0, 0.25);
+}
+
+/* 二维码加载中 / 失败时的占位文案 */
+.qr-fallback {
+    display: block;
+    padding: 24px 12px;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: #666;
+    word-break: break-all;
+}
